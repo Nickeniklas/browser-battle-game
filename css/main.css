@@ -1,0 +1,67 @@
+/* COLORS
+gray = #BAACA4
+blue-gray = #8AA5A4
+turqoise = #9DFAF6
+darker turqoise = #28504E
+sand = #F9BC9C
+brown = #7A6052
+red (damage)= #8b0000
+*/
+
+/* GENERAL */
+body {
+    background-color: #28504E;
+    background-image: url(../media/img/mafia_busine$$_background.jpg);
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto Flex';
+    color: white;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+#title-container {
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+
+}
+#title-container h1{
+    font-family: 'Barrio';
+    margin: 0;
+    font-size: 4rem;
+}
+#title-container p {
+    margin: 0;
+    font-size: 0.8rem;
+}
+
+/* FONTS */
+@font-face {
+    font-family: 'Roboto Flex';
+    src: url('../media/fonts/Roboto_Flex/RobotoFlex-VariableFont_GRAD\,XOPQ\,XTRA\,YOPQ\,YTAS\,YTDE\,YTFI\,YTLC\,YTUC\,opsz\,slnt\,wdth\,wght.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Indie Flower';
+    src: url('../media/fonts/Indie_Flower/IndieFlower-Regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Barrio';
+    src: url('../media/fonts/Barrio/Barrio-Regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Rubik Dirt';
+    src: url('../media/fonts/Rubik_Dirt/RubikDirt-Regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Jolly Lodger';
+    src: url('../media/fonts/Jolly_Lodger/JollyLodger-Regular.ttf') format('truetype');
+}
