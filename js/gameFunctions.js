@@ -283,11 +283,11 @@ function deleteSave() {
 function backgroundMusic(audioContent) {
     // random background song
     const audioFiles = [
-        "../media/audio/background/city-uplifting-vibes.mp3",
-        "../media/audio/background/funky-beat.mp3",
-        "../media/audio/background/happy-rock-corporate-loop.wav",
-        "../media/audio/background/nice_violin-beat.wav",
-        "../media/audio/background/rock-hellye.wav"
+        "media/audio/background/city-uplifting-vibes.mp3",
+        "media/audio/background/funky-beat.mp3",
+        "media/audio/background/happy-rock-corporate-loop.wav",
+        "media/audio/background/nice_violin-beat.wav",
+        "media/audio/background/rock-hellye.wav"
     ];
     const randomFile = audioFiles[Math.floor(Math.random() * audioFiles.length)];
     audioContent.src = randomFile;
