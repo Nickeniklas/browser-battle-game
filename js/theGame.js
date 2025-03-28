@@ -5,21 +5,30 @@ const playableChars = {
         'health' : 300,
         'damage' : 30,
         'special': 'Hemo Loud',
-        'img' : 'media/img/bad_character1.jpg' 
+        'img' : 'media/img/bad_character1.jpg',
+        'startAudio' : 'media/audio/sfx/start/draw_sword.wav',
+        'offenseAudio' : 'media/audio/sfx/offense/sword-slash-energy-wave.wav',
+        'deathAudio' : 'media/audio/sfx/dead/player_dead.wav'
     },
     'char2' : {
         'name' : 'Cigar Seppo',
         'health' : 200,
         'damage' : 50,
         'special': 'Gooner',
-        'img' : 'media/img/mafiaboss_character1.jpg'
+        'img' : 'media/img/mafiaboss_character1.jpg',
+        'startAudio' : 'media/audio/sfx/start/japanese_intro.wav',
+        'offenseAudio' : 'media/audio/sfx/offense/pistol-shot.wav',
+        'deathAudio' : 'media/audio/sfx/dead/player_dead.wav'
     }, 
     'char3' : {
         'name' : 'Skeffe Boss',
         'health' : 500,
         'damage' : 15,
         'special': 'Karsta Yskä',
-        'img' : 'media/img/bad_character3.jpg'
+        'img' : 'media/img/bad_character3.jpg',
+        'startAudio' : 'media/audio/sfx/start/lighter-strike.wav',
+        'offenseAudio' : 'media/audio/sfx/offense/punch-hard.wav',
+        'deathAudio' : 'media/audio/sfx/dead/player_dead.wav' 
     }
 };
 /* Hard coded NPC's */
@@ -134,7 +143,7 @@ function initializeCharacters(characterData) {
             <p><b>Speciality:</b> <span id="player-speciality">${player.special}</span></p>
         </div>
     </div>
-    <h2>VS.</h2>
+    <h2 id="vs-card-divider">VS</h2>
     <div class="character-cards" id="npc-container">
         <img class="character-img" src=${npc.img} alt="Image of enemy character.">
         <h2 id="npc-name">${npc.name}</h2>
@@ -168,19 +177,55 @@ function newEnemy() {
     const player = JSON.parse(localStorage.getItem('Saved-Game-Data'));
     initializeControls(player, npc);
 }
-// if saved game data exists in local storage -> start the game
-if (localStorage.getItem('Saved-Game-Data')) {
-    initializeCharacters(localStorage.getItem('Saved-Game-Data'));
-} else {
-    // character selection eventlisteners
-    const charactersElements = document.querySelectorAll('.starter-char');
-    
-    charactersElements.forEach(character => {
-        character.addEventListener('click', (event) => {
-            const characterId = event.currentTarget.id; // Get the id of the clicked element
-            // save chosen character to localstorage
-            setSavedCharacter(characterId);
-            console.log(characterId,  'saved!');
-        });
+
+function initializeBGAudio() {
+    // audio elements
+    const audiobtn = document.querySelector('#top-nav-btn-audio');
+    const audioContent = document.querySelector('#top-nav-audio-controls');
+    const nextSongBtn = document.querySelector('#next-song-btn');
+
+    // toggle controls visibility
+    audiobtn.addEventListener('click', () => {
+        console.log('click');
+        audioContent.classList.toggle('hidden');
+        nextSongBtn.classList.toggle('hidden');
+    });
+
+    // initial random song
+    backgroundMusic(audioContent);
+
+    // next song button eventlistener
+    nextSongBtn.addEventListener('click', ()=> {
+        backgroundMusic(audioContent);
     });
 }
+
+// function to initialize whole game, main function
+function initializeGame() {
+    // if saved game data exists in local storage -> start the game
+    if (localStorage.getItem('Saved-Game-Data')) {
+        initializeCharacters(localStorage.getItem('Saved-Game-Data'));
+    } else {
+        // character selection eventlisteners
+        const charactersElements = document.querySelectorAll('.starter-char');
+        
+        charactersElements.forEach(character => {
+            character.addEventListener('click', (event) => {
+                const characterId = event.currentTarget.id; // Get the id of the clicked element
+
+                // play sound effect 
+                playSoundEffect(playableChars[characterId].startAudio);
+                
+                // save chosen character to localstorage
+                setSavedCharacter(characterId);
+                console.log(characterId,  'saved!');
+            });
+        });
+    }
+
+    initializeBGAudio();
+
+    // initialize restart game button event listener
+    document.querySelector('#top-nav-btn-restart').addEventListener('click', deleteSave);
+}
+initializeGame();

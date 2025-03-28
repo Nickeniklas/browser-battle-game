@@ -96,6 +96,9 @@
     font-size: 2rem;
     font-family: 'Jolly Lodger';
 }
+#vs-card-divider {
+    font-family: 'Rubik Dirt';
+}
 
 /* gameplay container */
 #game-container {
@@ -124,6 +127,23 @@
     border-radius: 2rem;
     padding: 1rem;
 }
+/* Define the animation */
+@keyframes fadeInScale {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Apply the animation to any element with the class 'animate-visible' */
+.animate-visible {
+    animation: fadeInScale 0.5s ease-out;
+}
+
 /* fight controls */
 .fight-control-btn {
     width: 10rem;
