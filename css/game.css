@@ -127,21 +127,20 @@
     border-radius: 2rem;
     padding: 1rem;
 }
-/* Define the animation */
-@keyframes fadeInScale {
-    0% {
-        opacity: 0;
-        transform: scale(0.5);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
+.enemy-name {
+    color: #8b0000;
 }
-
-/* Apply the animation to any element with the class 'animate-visible' */
-.animate-visible {
-    animation: fadeInScale 0.5s ease-out;
+.player-name {
+    color: #198754;
+}
+#gameover-title {
+    font-family: 'Rubik Dirt';
+    margin: 2rem;
+    color: #8b0000;
+    font-size: 3.5rem;
+    background: black;
+    padding: 1rem;
+    border-radius: 1rem;
 }
 
 /* fight controls */

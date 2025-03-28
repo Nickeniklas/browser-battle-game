@@ -8,7 +8,6 @@ function getControlElements() {
     // element to write gameplay text
     dialogElement = document.querySelector('#dialog-content');
 }
-
 function enableControls() {
     getControlElements();
 
@@ -20,47 +19,58 @@ function enableControls() {
     skillBtnRun.disabled = false;
     dialogElement.style.display = "flex";
 }
-
 function disableControls() {
     getControlElements();
-    console.log("Disabling controls...");
     // disable controls and dialogbox
     skillBtn1.disabled = true;
     skillBtn2.disabled = true;
     skillBtnRun.disabled = true;
     dialogElement.style.display = "none";
 }
+
 // function for game over/player dead
 function playerDead(playerData) {
     console.log("player dead");
     // display health as 0
     document.querySelector('#player-health').textContent = 0;
-    // disable and hide controls
-    document.querySelector('#fight-controls-container').style.display = "none";
-    disableControls();
-    // death message in dialog box 
-    dialogElement.innerHTML = "<p>Better luck next time....</p>";
+
+    // disable and hide controls    
+    document.querySelector('#fight-controls-container').style.display = "";
+
+    // game over message in dialog box 
+    dialogElement.style.display = "flex";
+    dialogElement.innerHTML = "<h1 id='gameover-title'>Better luck next time....</h1>";
     //play sound effect for dying
     playSoundEffect(playerData.deathAudio);
 } 
 // function for when enemy dies
 function enemyDead(enemyData) {
     console.log("enemy dead");
-    // set set visible health to 0
-    document.querySelector('#npc-health').textContent = 0;
+    
     // de-activate controls
     disableControls();
+
+    // set set visible health to 0
+    document.querySelector('#npc-health').textContent = 0;
     //red enemy
     document.querySelector('#npc-container').style.backgroundColor = "#8b0000";
     // dialog
     dialogElement.style.display = "flex";
-    dialogElement.innerHTML = `<p><b>${enemyData.name}</b> has died...</p>`;
+    dialogElement.innerHTML = `<p><b class="enemy-name">${enemyData.name}</b> has died...</p>`;
+
+    // button for generating new enemy
+    document.querySelector('#npc-container h2').innerHTML = `<button type="button" class="btn btn-success" id="new-enemy-btn">New Enemy</button>`
+    // eventlistener to create new enemy
+    document.querySelector('#new-enemy-btn').addEventListener('click', ()=> {
+        saveGame();
+        newEnemy();
+    })
 }
 // enemy take damage function
-function enemyDamage(enemyData) {
+function enemyDamage(enemyData, damageAmount) {
     // dialog for taking damage
     dialogElement.style.display = "flex";
-    dialogElement.innerHTML = `<p><b>${enemyData.name}</b> took some damage!!</p>`;
+    dialogElement.innerHTML = `<p><b class="enemy-name">${enemyData.name}</b> took ${damageAmount} damage!!</p>`;
     
     // play random sound for taking damage
     const damagedSounds = ['media/audio/sfx/damaged/auch1.wav', 'media/audio/sfx/damaged/auch2.wav', 'media/audio/sfx/damaged/ohhh1.wav', 'media/audio/sfx/damaged/oof1.flac', 'media/audio/sfx/damaged/ouch1.mp3', 'media/audio/sfx/damaged/ouch2.wav', 'media/audio/sfx/damaged/ouch3.wav'];
@@ -69,72 +79,84 @@ function enemyDamage(enemyData) {
 }
 // player take damage
 function playerDamage(playerData, enemyData) {
+    console.log("player damage")
+    //console.log("original health:", playerData.health)
     // determine damage amount
-    const randomness = 1//parseFloat(Math.random().toFixed(2));
-    //console.log("Blow hit precentage: " + randomness * 100 + "%");
-    let damage = enemyData.damage * randomness;
+    const randomness = parseFloat(Math.random().toFixed(2));
+    console.log("Blow hit precentage: " + randomness * 100 + "%");
+    let damage = parseFloat(enemyData.damage * randomness);
+    damage = Math.round(damage * 100) / 100;
 
     // remove player health
     playerData.health -= damage
+    //console.log("after damage health:", playerData.health)
 
-    // player dead (no hp left)
+    // PLAYER DEAD (no hp left)
     if (playerData.health <= 0) {
         playerDead(playerData);
         return;
     }
-    //visualize damage in dom
-    let playerHp = document.querySelector('#player-health');
-    playerHp.textContent = playerData.health;
-    playerHp.style.color = "#8b0000";
+    // DEAL DAMAGE TO PLAYER
+    else {
+        //visualize damage in dom
+        let playerHp = document.querySelector('#player-health');
+        playerHp.textContent = playerData.health.toFixed(2);
+        playerHp.style.color = "#8b0000";
 
-    // dialog box for taking damage
-    dialogElement.innerHTML += `<p><b>${playerData.name}</b> took some damage...</p>`;
+        // dialog box for taking damage
+        dialogElement.innerHTML += `<p><b class="player-name">${playerData.name}</b> took ${damage} damage...</p>`;
 
-    // play sound effect for player taking damage
-    let damagedSoundFile = 'media/audio/sfx/damaged/player_damaged.wav';
-    playSoundEffect(damagedSoundFile);
+        // play sound effect for player taking damage
+        let damagedSoundFile = 'media/audio/sfx/damaged/player_damaged.wav';
+        playSoundEffect(damagedSoundFile);
+    }
 }
 // enemy does something function
-function enemyMove(playerData, enemyData, damage=false) {  
-    // enemy is dead
+function enemyMove(playerData, enemyData, hpChangeAmount, damage=false) {  
+    // ENEMY IS DEAD
     if (enemyData.health <= 0) {
         document.querySelector('#npc-health').textContent = 0;
         enemyDead(enemyData);
         return;
     }
 
-    // enemy still has HP left and damage=true
+    // ENEMY RESPONSE TO PLAYER USED DAMAGING HIT
     if (damage && enemyData.health > 0) {
         // enemy takes damage
-        enemyDamage(enemyData);
+        enemyDamage(enemyData, hpChangeAmount);
         window.scrollTo(0, document.body.scrollHeight);
-        // 1 sec delayed enemy attack response
+        // 0.8 sec delayed enemy attack response
         setTimeout(()=> {
             // dialog for attacking player
-            dialogElement.innerHTML = `<p><b>${enemyData.name}</b> is attacking!!</p>`;
+            dialogElement.innerHTML = `<p><b class="enemy-name">${enemyData.name}</b> is attacking!!</p>`;
+           
             // play sound effect for enemy attacking player
             const files = ['slap_wet.wav', 'impact-metal1.wav', 'slap_wet2.mp3'];
             let randomSfx = files[Math.floor(Math.random() * files.length)]; //random item
             let enemyAttackAudioFile = 'media/audio/sfx/offense/' + randomSfx;
             playSoundEffect(enemyAttackAudioFile);
-            // deal damage to player
-            playerDamage(playerData, enemyData);
-            // enable controls and scroll down
+            
             enableControls();
+            
+            // deal damage to player
+            playerDamage(playerData, enemyData, hpChangeAmount);
+            
+            //scroll to dialog
             window.scrollTo(0, document.body.scrollHeight);
         }, 800);
-    }        
-    // 1 sec delayed enemy attack response
-    setTimeout(()=> {
+        return;
+    }    
+    // ENEMY RESPONSE TO PLAYER USED NON DAMAGING 
+    setTimeout(()=> {// 0.8 sec delayed enemy attack response
         // dialog for attacking player
-        dialogElement.innerHTML = `<p><b>${enemyData.name}</b> is attacking!!</p>`;
+        dialogElement.innerHTML = `<p><b class="enemy-name">${enemyData.name}</b> is attacking!!</p>`;
         // play sound effect for enemy attacking player
         const files = ['slap_wet.wav', 'impact-metal1.wav', 'slap_wet2.mp3'];
         let randomSfx = files[Math.floor(Math.random() * files.length)]; //random item
         let enemyAttackAudioFile = 'media/audio/sfx/offense/' + randomSfx;
         playSoundEffect(enemyAttackAudioFile);
         // deal damage to player
-        playerDamage(playerData, enemyData);
+        playerDamage(playerData, enemyData, hpChangeAmount);
         // enable controls and scroll down
         if (playerData.health > 0) enableControls();
         window.scrollTo(0, document.body.scrollHeight);
@@ -150,14 +172,15 @@ function skillPrimary(playerData, enemyData) {
     // determine damage
     //console.log("enemy hp before: " + enemyData.health);
     // randomness
-    const randomness = 1//parseFloat(Math.random().toFixed(2));
+    const randomness = parseFloat(Math.random().toFixed(2));
     //console.log("Blow hit precentage: " + randomness * 100 + "%");
-    let damage = playerData.damage * randomness;
+    let damage = parseFloat(playerData.damage * randomness);
+    damage = Math.round(damage * 100) / 100;
     // deal damage to enemy
     enemyData.health -= damage ;
     //visualize damage in dom
     let enemyHp = document.querySelector('#npc-health');
-    enemyHp.textContent = enemyData.health;
+    enemyHp.textContent = enemyData.health.toFixed(2);
     enemyHp.style.color = "#8b0000";
 
     //console.log("enemy hp after: " + enemyData.health);
@@ -168,12 +191,14 @@ function skillPrimary(playerData, enemyData) {
     disableControls();
 
     // enemy response
-    enemyMove(playerData, enemyData, true); 
+    enemyMove(playerData, enemyData, damage, true); 
 }
 
 // secondary skill function (skill 2)
 function skillSecondary(playerData, enemyData) {
     damage = false;
+    let timeOutDuration = 1500;
+    let amount = 0;
     // array of possible items
     const items = ['Apple', 'Banana', 'Cherry', 'Grapes', 'Mango', 'Pineapple', 'Strawberry', 'Watermelon', 'Blueberry', 'Orange', 'Niksapussi', 'Mallugoldi', 'Denssirotta', 'vanhat vedet', 'Metukka', 'Karhu kolmonen', 'warm chair', 'exhaust fumes'];
     let randomItem = items[Math.floor(Math.random() * items.length)]; //random item
@@ -182,19 +207,56 @@ function skillSecondary(playerData, enemyData) {
 
     // enable dialogbox and write gameplay text 
     dialogElement.style.display = "flex";
-    dialogElement.innerHTML = `<p><b>${playerData.name}</b> smelled and tasted a ${randomItem}....</p>`;
+    dialogElement.innerHTML = `<p><b class="player-name">${playerData.name}</b> smelled and tasted a ${randomItem}....</p>`;
+    
+    // determine if item heals player
+    const healItems = ['Apple', 'Banana', 'Cherry', 'Grapes', 'Mango', 'Pineapple', 'Strawberry', 'Watermelon', 'Blueberry', 'Orange'];
+    if (healItems.includes(randomItem)) {
+        timeOutDuration = 2500 // longer time to read 
+        // heal player for random amount
+        let healAmount = Math.floor(Math.random() * 70);
+        healAmount = Math.round(healAmount * 100) / 100;
+        playerData.health += healAmount;
+        // dialog message healing player 
+        dialogElement.innerHTML += `<p><b class="player-name">${playerData.name}</b> got healed for ${healAmount}!</p>`;
+        // display healing
+        let hpElement = document.querySelector('#player-health');
+        hpElement.textContent = playerData.health.toFixed(2);
+        hpElement.style.color = "#198754";
 
-    // determine if deals damage
-    const lethalItems = ['Niksapussi', 'Mallugoldi', 'Denssirotta', 'vanhat vedet', 'Metukka', 'Karhu kolmonen', 'warm chair', 'exhaust fumes'];
-    if (lethalItems.includes(randomItem)) {
-        damage = true
-        dialogElement.innerHTML += `<p><b>${enemyData.name}</b> also smelled that ${randomItem} and took some damage....</p>`;
+        amount = healAmount;
     }
 
-    // enemy response
-    setTimeout(()=> { // TO DO FIX THIS STRUCTURE
-        enemyMove(playerData, enemyData, damage); 
-    }, 1000);
+    // determine if item deals damage enemy
+    const lethalItems = ['Niksapussi', 'Mallugoldi', 'Denssirotta', 'vanhat vedet', 'Metukka', 'Karhu kolmonen', 'warm chair', 'exhaust fumes'];
+    if (lethalItems.includes(randomItem)) {
+        damage = true // deals damage true for function call
+        timeOutDuration = 2500 // longer time to read 
+
+        // deal damage to enemy for random amount
+        let damageAmount = Math.floor(Math.random() * 50);
+        damageAmount = Math.round(damageAmount * 100) / 100;
+        enemyData.health -= damageAmount;
+        // dialog message enemy smelling bad stuff 
+        dialogElement.innerHTML += `<p><b class="enemy-name">${enemyData.name}</b> also smelled that ${randomItem} and took ${damageAmount} damage!</p>`;
+        
+        // display damage
+        let hpElement = document.querySelector('#npc-health');
+        hpElement.textContent = enemyData.health.toFixed(2);
+        hpElement.style.color = "#8b0000";
+
+        amount = damageAmount;
+    }
+
+    // scroll down to messages
+    window.scrollTo(0, document.body.scrollHeight);
+
+    setTimeout(()=> {
+        // enemy response
+        enemyMove(playerData, enemyData, amount, damage);
+        
+    }, timeOutDuration);
+    
 }
 
 // run away from fight function
@@ -229,7 +291,7 @@ function backgroundMusic(audioContent) {
     ];
     const randomFile = audioFiles[Math.floor(Math.random() * audioFiles.length)];
     audioContent.src = randomFile;
-    //audioContent.play();
+    audioContent.play();
 }
 
 //sound effect

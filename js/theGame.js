@@ -31,27 +31,7 @@ const playableChars = {
         'deathAudio' : 'media/audio/sfx/dead/player_dead.wav' 
     }
 };
-/* Hard coded NPC's */
-const npcs = {
-    'npc1' : {
-        'name' : 'Mr. Loser',
-        'health' : 100,
-        'damage' : 20,
-        'img' : 'media/img/mafiaboss_character2.jpg'
-    },
-    'npc2' : {
-        'name' : 'Cledos',
-        'health' : 80,
-        'damage' : 45,
-        'img' : 'media/img/mafiaboss_character3.jpg'
-    },
-    'npc3' : {
-        'name' : 'ichiban',
-        'health' : 120,
-        'damage' : 30,
-        'img' : 'media/img/bad_character2.jpg'
-    }
-};
+
 
 // function for choosing a character and setting it to localstorage
 function setSavedCharacter(characterId) {
@@ -60,7 +40,7 @@ function setSavedCharacter(characterId) {
     document.querySelector('#select-char-container').innerHTML = "";
     initializeCharacters(characterData);
 }
-// function for saving mid game and setting the data to localstorage
+// function for saving game and setting the data to localstorage
 function saveGame() {
     // take the current data from the card
     const damageText = document.querySelector('#player-damage').textContent;
@@ -86,11 +66,46 @@ function saveGame() {
     console.log("Game saved successfully with updated stats:", savedData);
 }
 
+/* Hard coded NPC's */
+const npcs = {
+    'npc1' : {
+        'name' : 'Mr. Loser',
+        'health' : 100,
+        'damage' : 20,
+        'img' : 'media/img/mafiaboss_character2.jpg'
+    },
+    'npc2' : {
+        'name' : 'Cledos',
+        'health' : 80,
+        'damage' : 45,
+        'img' : 'media/img/mafiaboss_character3.jpg'
+    },
+    'npc3' : {
+        'name' : 'ichiban',
+        'health' : 120,
+        'damage' : 30,
+        'img' : 'media/img/bad_character2.jpg'
+    }
+};
 // function for getting a random enemy
 function createRandomEnemy() {
+    const names = ['Mr. Loser', 'Cledos', 'Ichiban', 'Gerg', 'Bossman', 'Street Thug', 'Bing Chilling'];
+    let name = names[Math.floor(Math.random() * names.length)];
+    let health = Math.floor(Math.random() * ((300 - 80) / 10 + 1)) * 10 + 80;
+    let damage = Math.floor(Math.random() * ((60 - 20) / 10 + 1)) * 10 + 20;
+    const images = ['media/img/mafiaboss_character2.jpg', 'media/img/mafiaboss_character3.jpg', 'media/img/bad_character2.jpg'];
+    let img = images[Math.floor(Math.random() * images.length)];
+
+    let npc = {
+        'name' : name,
+        'health' : health,
+        'damage' : damage,
+        'img' : img
+    }
+
     // npc data (choose random npc)
-    const npcName = 'npc' + (Math.floor(Math.random() * 3) + 1); //random integer between 1-3
-    const npc = npcs[npcName];
+    //const npcName = 'npc' + (Math.floor(Math.random() * 3) + 1); //random integer between 1-3
+    //const npc = npcs[npcName];
     return npc;
 }
 
@@ -161,7 +176,7 @@ function initializeCharacters(characterData) {
 // function for creating new enemy
 function newEnemy() {
     let npcContent = document.querySelector('#npc-container')
-    // use createRandomEnemy() to get npc data
+    // get npc data
     const npc = createRandomEnemy();
     npcContent.style.backgroundColor = "#7A6052"
     // create new enemy
