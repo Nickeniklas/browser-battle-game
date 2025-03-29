@@ -5,6 +5,7 @@ const playableChars = {
         'health' : 300,
         'damage' : 30,
         'special': 'Hemo Loud',
+        'battlesWon' : 0,
         'img' : 'media/img/bad_character1.jpg',
         'startAudio' : 'media/audio/sfx/start/draw_sword.wav',
         'offenseAudio' : 'media/audio/sfx/offense/sword-slash-energy-wave.wav',
@@ -15,6 +16,7 @@ const playableChars = {
         'health' : 200,
         'damage' : 50,
         'special': 'Gooner',
+        'battlesWon' : 0,
         'img' : 'media/img/mafiaboss_character1.jpg',
         'startAudio' : 'media/audio/sfx/start/japanese_intro.wav',
         'offenseAudio' : 'media/audio/sfx/offense/pistol-shot.wav',
@@ -25,6 +27,7 @@ const playableChars = {
         'health' : 500,
         'damage' : 15,
         'special': 'Karsta Yskä',
+        'battlesWon' : 0,
         'img' : 'media/img/bad_character3.jpg',
         'startAudio' : 'media/audio/sfx/start/lighter-strike.wav',
         'offenseAudio' : 'media/audio/sfx/offense/punch-hard.wav',
@@ -41,7 +44,8 @@ function setSavedCharacter(characterId) {
     initializeCharacters(characterData);
 }
 // function for saving game and setting the data to localstorage
-function saveGame() {
+function saveGame(playerData) {
+    /*
     // take the current data from the card
     const damageText = document.querySelector('#player-damage').textContent;
     const healthText = document.querySelector('#player-health').textContent;
@@ -59,11 +63,12 @@ function saveGame() {
     // Update the stats in the saved data
     savedData.damage = damage;
     savedData.health = health;
-
+    */
+   
     // Save the updated data back to localStorage
-    localStorage.setItem('Saved-Game-Data', JSON.stringify(savedData));
+    localStorage.setItem('Saved-Game-Data', JSON.stringify(playerData));
 
-    console.log("Game saved successfully with updated stats:", savedData);
+    console.log("Game saved successfully with updated stats:", playerData);
 }
 
 /* Hard coded NPC's */

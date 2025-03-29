@@ -44,7 +44,7 @@ function playerDead(playerData) {
     playSoundEffect(playerData.deathAudio);
 } 
 // function for when enemy dies
-function enemyDead(enemyData) {
+function enemyDead(playerData, enemyData) {
     console.log("enemy dead");
     
     // de-activate controls
@@ -57,12 +57,18 @@ function enemyDead(enemyData) {
     // dialog
     dialogElement.style.display = "flex";
     dialogElement.innerHTML = `<p><b class="enemy-name">${enemyData.name}</b> has died...</p>`;
+    // draw/update score for winning fight
+    console.log("draw score function runnning in enemyDead...");
+    console.log(playerData.battlesWon);
+    playerData.battlesWon += 1;
+    console.log(playerData.battlesWon);
+    drawScore(playerData);
+    saveGame(playerData);
 
     // button for generating new enemy
     document.querySelector('#npc-container h2').innerHTML = `<button type="button" class="btn btn-success" id="new-enemy-btn">New Enemy</button>`
     // eventlistener to create new enemy
     document.querySelector('#new-enemy-btn').addEventListener('click', ()=> {
-        saveGame();
         newEnemy();
     })
 }
@@ -116,7 +122,7 @@ function enemyMove(playerData, enemyData, hpChangeAmount, damage=false) {
     // ENEMY IS DEAD
     if (enemyData.health <= 0) {
         document.querySelector('#npc-health').textContent = 0;
-        enemyDead(enemyData);
+        enemyDead(playerData, enemyData);
         return;
     }
 
@@ -172,7 +178,7 @@ function skillPrimary(playerData, enemyData) {
     // determine damage
     //console.log("enemy hp before: " + enemyData.health);
     // randomness
-    const randomness = parseFloat(Math.random().toFixed(2));
+    const randomness = parseFloat((0.25 + Math.random() * 0.59).toFixed(2));
     //console.log("Blow hit precentage: " + randomness * 100 + "%");
     let damage = parseFloat(playerData.damage * randomness);
     damage = Math.round(damage * 100) / 100;
@@ -212,7 +218,7 @@ function skillSecondary(playerData, enemyData) {
     // determine if item heals player
     const healItems = ['Apple', 'Banana', 'Cherry', 'Grapes', 'Mango', 'Pineapple', 'Strawberry', 'Watermelon', 'Blueberry', 'Orange'];
     if (healItems.includes(randomItem)) {
-        timeOutDuration = 2500 // longer time to read 
+        timeOutDuration = 1500 // longer time to read 
         // heal player for random amount
         let healAmount = Math.floor(Math.random() * 70);
         healAmount = Math.round(healAmount * 100) / 100;
@@ -262,7 +268,7 @@ function skillSecondary(playerData, enemyData) {
 // run away from fight function
 function skillRun() {
     // save character
-    saveGame();
+    saveGame(playerData);
     
     disableControls();
     // button for generating new enemy
@@ -299,6 +305,14 @@ function playSoundEffect(soundFile) {
     //EX: soundFile = "../media/audio/effects/click-sound.mp3"
     soundFile = new Audio(soundFile);
     soundFile.play();
+}
+
+// funciton for drawing score on screen (battles won)
+function drawScore(playerData) {
+    console.log("draw score function runnning...");
+    const statsElement = document.querySelector('#stats-container');
+    
+    statsElement.innerHTML = `<h2 id="battles-won">Battles won: ${playerData.battlesWon}</h2>`
 }
 
 

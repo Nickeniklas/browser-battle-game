@@ -108,11 +108,7 @@
     justify-content: center;
 }
 
-#fight-controls-container {
-    display: none;
-    margin: 1.5rem;
-    gap: 1rem;
-}
+
 
 #dialog-content {
     display: none;
@@ -133,6 +129,14 @@
 .player-name {
     color: #198754;
 }
+/* score/stats/battles won */
+#stats-container {
+    justify-content: center;
+}
+#battles-won {
+    font-family: 'Jolly Lodger';
+}
+/* game over */
 #gameover-title {
     font-family: 'Rubik Dirt';
     margin: 2rem;
@@ -144,6 +148,11 @@
 }
 
 /* fight controls */
+#fight-controls-container {
+    display: none;
+    margin: 1.5rem;
+    gap: 1rem;
+}
 .fight-control-btn {
     width: 10rem;
     height: 4rem;
