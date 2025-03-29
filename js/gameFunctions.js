@@ -65,6 +65,11 @@ function enemyDead(playerData, enemyData) {
     drawScore(playerData);
     saveGame(playerData);
 
+    // play random sound for enemy dying
+    const deadSounds = ['media/audio/sfx/dead/male_death1.mp3', 'media/audio/sfx/dead/male_death2.wav', 'media/audio/sfx/dead/male_death3.wav', 'media/audio/sfx/dead/male-death4.wav'];
+    const randomDeadSound = deadSounds[Math.floor(Math.random() * deadSounds.length)];
+    playSoundEffect(randomDeadSound);
+
     // button for generating new enemy
     document.querySelector('#npc-container h2').innerHTML = `<button type="button" class="btn btn-success" id="new-enemy-btn">New Enemy</button>`
     // eventlistener to create new enemy
@@ -266,7 +271,7 @@ function skillSecondary(playerData, enemyData) {
 }
 
 // run away from fight function
-function skillRun() {
+function skillRun(playerData) {
     // save character
     saveGame(playerData);
     

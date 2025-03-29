@@ -9,7 +9,7 @@ const playableChars = {
         'img' : 'media/img/bad_character1.jpg',
         'startAudio' : 'media/audio/sfx/start/draw_sword.wav',
         'offenseAudio' : 'media/audio/sfx/offense/sword-slash-energy-wave.wav',
-        'deathAudio' : 'media/audio/sfx/dead/player_dead.wav'
+        'deathAudio' : 'media/audio/sfx/dead/scream-young-male.wav'
     },
     'char2' : {
         'name' : 'Cigar Seppo',
@@ -31,7 +31,7 @@ const playableChars = {
         'img' : 'media/img/bad_character3.jpg',
         'startAudio' : 'media/audio/sfx/start/lighter-strike.wav',
         'offenseAudio' : 'media/audio/sfx/offense/punch-hard.wav',
-        'deathAudio' : 'media/audio/sfx/dead/player_dead.wav' 
+        'deathAudio' : 'media/audio/sfx/dead/ahhhh.wav' 
     }
 };
 
@@ -64,7 +64,7 @@ function saveGame(playerData) {
     savedData.damage = damage;
     savedData.health = health;
     */
-   
+
     // Save the updated data back to localStorage
     localStorage.setItem('Saved-Game-Data', JSON.stringify(playerData));
 
@@ -137,7 +137,7 @@ function initializeControls(player, npc) {
         skillSecondary(player, npc);
     }); 
     newSkillBtnRun.addEventListener('click', ()=> {
-        skillRun();
+        skillRun(player);
     });    
     enableControls();
 }
