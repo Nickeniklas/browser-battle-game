@@ -63,6 +63,8 @@ function enemyDead(playerData, enemyData) {
     playerData.battlesWon += 1;
     console.log(playerData.battlesWon);
     drawScore(playerData);
+    // reset has run away status
+    playerData.hasRunAway = false;
     saveGame(playerData);
 
     // play random sound for enemy dying
@@ -272,6 +274,17 @@ function skillSecondary(playerData, enemyData) {
 
 // run away from fight function
 function skillRun(playerData) {
+    // allow run away only once per won fight
+    if (playerData.hasRunAway) {
+        // Prevent running away again
+        dialogElement.style.display = "flex";
+        dialogElement.innerHTML = `<p><b class="player-name">${playerData.name}</b> has already run away once in this battle!</p>`;
+        return;
+    }
+
+    // set run away status to true
+    playerData.hasRunAway = true;
+
     // save character
     saveGame(playerData);
     
@@ -282,6 +295,8 @@ function skillRun(playerData) {
     document.querySelector('#new-enemy-btn').addEventListener('click', ()=> {
         newEnemy();
     })
+
+    
 }
 // delete localstorage (reset game)
 function deleteSave() {

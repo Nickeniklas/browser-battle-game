@@ -6,6 +6,7 @@ const playableChars = {
         'damage' : 30,
         'special': 'Hemo Loud',
         'battlesWon' : 0,
+        'hasRunAway': false,
         'img' : 'media/img/bad_character1.jpg',
         'startAudio' : 'media/audio/sfx/start/draw_sword.wav',
         'offenseAudio' : 'media/audio/sfx/offense/sword-slash-energy-wave.wav',
@@ -17,6 +18,7 @@ const playableChars = {
         'damage' : 50,
         'special': 'Gooner',
         'battlesWon' : 0,
+        'hasRunAway': false,
         'img' : 'media/img/mafiaboss_character1.jpg',
         'startAudio' : 'media/audio/sfx/start/japanese_intro.wav',
         'offenseAudio' : 'media/audio/sfx/offense/pistol-shot.wav',
@@ -28,6 +30,7 @@ const playableChars = {
         'damage' : 15,
         'special': 'Karsta Yskä',
         'battlesWon' : 0,
+        'hasRunAway': false,
         'img' : 'media/img/bad_character3.jpg',
         'startAudio' : 'media/audio/sfx/start/lighter-strike.wav',
         'offenseAudio' : 'media/audio/sfx/offense/punch-hard.wav',
@@ -64,7 +67,6 @@ function saveGame(playerData) {
     savedData.damage = damage;
     savedData.health = health;
     */
-
     // Save the updated data back to localStorage
     localStorage.setItem('Saved-Game-Data', JSON.stringify(playerData));
 
@@ -195,6 +197,7 @@ function newEnemy() {
         </div>
     `;
     const player = JSON.parse(localStorage.getItem('Saved-Game-Data'));
+    console.log("new enemy: " + player.hasRunAway)
     initializeControls(player, npc);
 }
 
