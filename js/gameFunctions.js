@@ -220,7 +220,7 @@ function skillSecondary(playerData, enemyData) {
     if (healItems.includes(randomItem)) {
         timeOutDuration = 1500 // longer time to read 
         // heal player for random amount
-        let healAmount = Math.floor(Math.random() * 70);
+        let healAmount = Math.floor(Math.random() * 30) + 15;
         healAmount = Math.round(healAmount * 100) / 100;
         playerData.health += healAmount;
         // dialog message healing player 
@@ -240,7 +240,7 @@ function skillSecondary(playerData, enemyData) {
         timeOutDuration = 2500 // longer time to read 
 
         // deal damage to enemy for random amount
-        let damageAmount = Math.floor(Math.random() * 50);
+        let damageAmount = Math.floor(Math.random() * 35) + 15;
         damageAmount = Math.round(damageAmount * 100) / 100;
         enemyData.health -= damageAmount;
         // dialog message enemy smelling bad stuff 
@@ -248,7 +248,7 @@ function skillSecondary(playerData, enemyData) {
         
         // display damage
         let hpElement = document.querySelector('#npc-health');
-        hpElement.textContent = enemyData.health.toFixed(2);
+        hpElement.textContent = Math.max(0, enemyData.health);
         hpElement.style.color = "#8b0000";
 
         amount = damageAmount;
