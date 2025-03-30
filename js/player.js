@@ -88,7 +88,7 @@ function skillPrimary(playerData, enemyData) {
     // determine damage
     //console.log("enemy hp before: " + enemyData.health);
     // randomness
-    const randomness = parseFloat((0.4 + Math.random() * 0.6).toFixed(2));
+    const randomness = parseFloat((0.6 + Math.random() * 0.4).toFixed(2));
     //console.log("Blow hit precentage: " + randomness * 100 + "%");
     let damage = parseFloat(playerData.damage * randomness);
     damage = Math.round(damage * 100) / 100;

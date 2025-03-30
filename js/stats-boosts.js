@@ -13,20 +13,18 @@ function drawScore(playerData) {
 // BOOSTS/PERKS/LOOT
 function createBoost(amount = 1) {
     //  boost types 
-    let boostTypeList = ['Gain Health', 'Uppgrade Damage', 'Gain Shield', 'Upgrade Tactical'];
-    // return list
-    let boostList = [];
+    let boostTypeList = ['Gain Health', 'Upgrade Damage', 'Gain Shield', 'Upgrade Tactical'];
+    
+    // Shuffle boost types to ensure randomness
+    let shuffledBoosts = boostTypeList.sort(() => Math.random() - 0.5);
+    
+    // Limit the selection to the requested amount, avoiding duplicates
+    let selectedBoosts = shuffledBoosts.slice(0, Math.min(amount, boostTypeList.length)).map(type => ({
+        type: type,
+        amount: Math.max(5, Math.floor(Math.random() * 5) * 5)
+    }));
 
-    // loop and create as many sets of perks as parameter amount
-    for (let i = 0; i < amount; i++) {
-        let boostType = boostTypeList[Math.floor(Math.random() * boostTypeList.length)];
-        let boostAmount = Math.floor(Math.random() * 25) + 1;
-
-        //console.log("Created boost of type:", boostType, "amount:", boostAmount);
-        boostList.push({ type: boostType, amount: boostAmount });
-    }
-
-    return boostList;
+    return selectedBoosts;
 }
 
 function useBoost(playerData, boostType, boostAmount) {
@@ -54,7 +52,7 @@ function useBoost(playerData, boostType, boostAmount) {
         return;
     }
     // Add damage
-    else if (boostType == "Uppgrade Damage") {
+    else if (boostType == "Upgrade Damage") {
         // hide buttons and draw upgrade instead
         boostsContainer.innerHTML = `
         <div id="boost-output">

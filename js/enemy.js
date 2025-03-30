@@ -9,11 +9,11 @@ function createRandomEnemy(battlesWon = 0) {
     let img = images[Math.floor(Math.random() * images.length)];
 
     // Difficulty scaling factor
-    let scale = 1 + battlesWon * 0.25; // Increases stats by 25% per win
+    let scale = 1 + battlesWon * 0.2; // Increases stats by 25% per win
     console.log(scale)
     // get random base stats
-    let baseHealth = Math.floor(Math.random() * ((300 - 80) / 10 + 1)) * 10 + 80; //80-300, nearest 10.
-    let baseDamage = Math.floor(Math.random() * ((60 - 20) / 10 + 1)) * 10 + 20; //20-60, nearest 10.
+    let baseHealth = Math.floor(Math.random() * ((140 - 60) / 10 + 1)) * 10 + 60; //60-140, nearest 10.
+    let baseDamage = Math.floor(Math.random() * 5) * 5 + 15; //15-35, nearest 5.
     let baseShield = Math.floor(Math.random() * 20) + 1; // 1-20
     
     // Scale stats with battlesWon (propgressivly harder)
