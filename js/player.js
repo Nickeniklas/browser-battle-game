@@ -116,7 +116,7 @@ function skillSecondary(playerData, enemyData) {
     let timeOutDuration = 1500;
     let amount = 0;
     // array of possible items
-    const items = ['Apple', 'Banana', 'Cherry', 'Grapes', 'Mango', 'Pineapple', 'Strawberry', 'Watermelon', 'Blueberry', 'Orange', 'Niksapussi', 'Mallugoldi', 'Denssirotta', 'vanhat vedet', 'Metukka', 'Karhu kolmonen', 'warm chair', 'exhaust fumes'];
+    const items = ['Apple', 'Banana', 'Cherry', 'Grapes', 'Mango', 'Pineapple', 'Strawberry', 'Watermelon', 'Blueberry', 'Orange', 'Niksapussi', 'Mallugoldi', 'Denssirotta', 'vanhat vedet', 'Metukka', 'Karhu kolmonen', 'warm chair', 'exhaust fumes', 'Peach', 'Pear', 'Plum', 'Kiwi', 'Pomegranate', 'Coconut', 'Fig', 'Papaya', 'Guava', 'Lychee'];
     let randomItem = items[Math.floor(Math.random() * items.length)]; //random item
 
     disableControls();
@@ -125,8 +125,13 @@ function skillSecondary(playerData, enemyData) {
     dialogElement.style.display = "flex";
     dialogElement.innerHTML = `<p><b class="player-name">${playerData.name}</b> smelled and tasted a ${randomItem}....</p>`;
     
-    // determine if item heals player
+    // healing items
     const healItems = ['Apple', 'Banana', 'Cherry', 'Grapes', 'Mango', 'Pineapple', 'Strawberry', 'Watermelon', 'Blueberry', 'Orange'];
+    // items that damage the enemy
+    const lethalItems = ['Niksapussi', 'Mallugoldi', 'Denssirotta', 'vanhat vedet', 'Metukka', 'Karhu kolmonen', 'warm chair', 'exhaust fumes'];
+    // items that do nothing
+    const nonItems = ['Peach', 'Pear', 'Plum', 'Kiwi', 'Pomegranate', 'Coconut', 'Fig', 'Papaya', 'Guava', 'Lychee'];
+    // determine if item heals player
     if (healItems.includes(randomItem)) {
         timeOutDuration = 800 // longer time to read 
         // heal player for random amount
@@ -137,15 +142,13 @@ function skillSecondary(playerData, enemyData) {
         dialogElement.innerHTML += `<p><b class="player-name">${playerData.name}</b> got healed for ${healAmount}!</p>`;
         // display healing
         let hpElement = document.querySelector('#player-health');
-        hpElement.textContent = playerData.health.toFixed(2);
+        hpElement.textContent = Math.max(0, playerData.health.toFixed(2));
         hpElement.style.color = "#198754";
 
         amount = healAmount;
     }
-
-    // determine if item deals damage enemy
-    const lethalItems = ['Niksapussi', 'Mallugoldi', 'Denssirotta', 'vanhat vedet', 'Metukka', 'Karhu kolmonen', 'warm chair', 'exhaust fumes'];
-    if (lethalItems.includes(randomItem)) {
+    // if item does damage to enemy
+    else if (lethalItems.includes(randomItem)) {
         damage = true // deals damage true for function call
         timeOutDuration = 2000 // longer time to read 
 
@@ -162,6 +165,14 @@ function skillSecondary(playerData, enemyData) {
         enemyHPElement.style.color = "#8b0000";
 
         amount = damageAmount;
+    }
+    // item is uselss (does nothing)
+    else if (nonItems.includes(randomItem)) {
+        timeOutDuration = 500;
+
+        // update dialog 
+        // dialog message enemy smelling bad stuff 
+        dialogElement.innerHTML += `<p>Nothing happened...</p>`;
     }
 
     // scroll down to messages
