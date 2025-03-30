@@ -116,7 +116,7 @@ function skillSecondary(playerData, enemyData) {
     let timeOutDuration = 1500;
     let amount = 0;
     // array of possible items
-    const items = ['Apple', 'Banana', 'Cherry', 'Grapes', 'Mango', 'Pineapple', 'Strawberry', 'Watermelon', 'Blueberry', 'Orange', 'Niksapussi', 'Mallugoldi', 'Denssirotta', 'vanhat vedet', 'Metukka', 'Karhu kolmonen', 'warm chair', 'exhaust fumes', 'Peach', 'Pear', 'Plum', 'Kiwi', 'Pomegranate', 'Coconut', 'Fig', 'Papaya', 'Guava', 'Lychee'];
+    const items = ['Apple', 'Banana', 'Cherry', 'Grapes', 'Mango', 'Pineapple', 'Strawberry', 'Watermelon', 'Blueberry', 'Orange', 'Niksapussi', 'Mallugoldi', 'Denssirotta', 'vanhat vedet', 'Metukka', 'Karhu kolmonen', 'warm chair', 'exhaust fumes', 'Peach', 'Pear', 'Plum', 'Kiwi', 'Coconut', 'Fig', 'Papaya', 'Guava'];
     let randomItem = items[Math.floor(Math.random() * items.length)]; //random item
 
     disableControls();
@@ -135,7 +135,7 @@ function skillSecondary(playerData, enemyData) {
     if (healItems.includes(randomItem)) {
         timeOutDuration = 800 // longer time to read 
         // heal player for random amount
-        let healAmount = Math.floor(Math.random() * 30) + 15;
+        let healAmount = Math.floor(Math.random() * 46) + 25; // 25 - 80
         healAmount = Math.round(healAmount * 100) / 100;
         playerData.health += healAmount;
         // dialog message healing player 
@@ -153,7 +153,7 @@ function skillSecondary(playerData, enemyData) {
         timeOutDuration = 2000 // longer time to read 
 
         // deal damage to enemy for random amount
-        let damageAmount = Math.floor(Math.random() * 35) + 15;
+        let damageAmount = Math.floor(Math.random() * 46) + 25;
         damageAmount = Math.round(damageAmount * 100) / 100;
         enemyData.health -= damageAmount;
         // dialog message enemy smelling bad stuff 
