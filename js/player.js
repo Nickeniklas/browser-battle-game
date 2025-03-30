@@ -49,7 +49,7 @@ function playerDamage(playerData, enemyData) {
     console.log("player damage")
     //console.log("original health:", playerData.health)
     // determine damage amount
-    const randomness = parseFloat(Math.random().toFixed(2));
+    const randomness = parseFloat((0.4 + Math.random() * 0.6).toFixed(2));
     console.log("Blow hit precentage: " + randomness * 100 + "%");
     let damage = parseFloat(enemyData.damage * randomness);
     damage = Math.round(damage * 100) / 100;
@@ -88,7 +88,7 @@ function skillPrimary(playerData, enemyData) {
     // determine damage
     //console.log("enemy hp before: " + enemyData.health);
     // randomness
-    const randomness = parseFloat((0.25 + Math.random() * 0.59).toFixed(2));
+    const randomness = parseFloat((0.4 + Math.random() * 0.6).toFixed(2));
     //console.log("Blow hit precentage: " + randomness * 100 + "%");
     let damage = parseFloat(playerData.damage * randomness);
     damage = Math.round(damage * 100) / 100;
@@ -128,7 +128,7 @@ function skillSecondary(playerData, enemyData) {
     // determine if item heals player
     const healItems = ['Apple', 'Banana', 'Cherry', 'Grapes', 'Mango', 'Pineapple', 'Strawberry', 'Watermelon', 'Blueberry', 'Orange'];
     if (healItems.includes(randomItem)) {
-        timeOutDuration = 1500 // longer time to read 
+        timeOutDuration = 800 // longer time to read 
         // heal player for random amount
         let healAmount = Math.floor(Math.random() * 30) + 15;
         healAmount = Math.round(healAmount * 100) / 100;
@@ -147,7 +147,7 @@ function skillSecondary(playerData, enemyData) {
     const lethalItems = ['Niksapussi', 'Mallugoldi', 'Denssirotta', 'vanhat vedet', 'Metukka', 'Karhu kolmonen', 'warm chair', 'exhaust fumes'];
     if (lethalItems.includes(randomItem)) {
         damage = true // deals damage true for function call
-        timeOutDuration = 2500 // longer time to read 
+        timeOutDuration = 2000 // longer time to read 
 
         // deal damage to enemy for random amount
         let damageAmount = Math.floor(Math.random() * 35) + 15;
@@ -157,9 +157,9 @@ function skillSecondary(playerData, enemyData) {
         dialogElement.innerHTML += `<p><b class="enemy-name">${enemyData.name}</b> also smelled that ${randomItem} and took ${damageAmount} damage!</p>`;
         
         // display damage
-        let hpElement = document.querySelector('#npc-health');
-        hpElement.textContent = Math.max(0, enemyData.health);
-        hpElement.style.color = "#8b0000";
+        let enemyHPElement = document.querySelector('#npc-health');
+        enemyHPElement.textContent = enemyData.health.toFixed(2);
+        enemyHPElement.style.color = "#8b0000";
 
         amount = damageAmount;
     }
@@ -196,7 +196,7 @@ function skillRun(playerData) {
     document.querySelector('#npc-container').innerHTML = `<button type="button" class="btn btn-success" id="new-enemy-btn">New Enemy</button>`
     // eventlistener to create new enemy
     document.querySelector('#new-enemy-btn').addEventListener('click', ()=> {
-        newEnemy();
+        newEnemy(playerData.battlesWon);
     })
 
     

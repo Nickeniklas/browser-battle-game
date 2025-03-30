@@ -1,31 +1,46 @@
 // function for getting a random enemy
-function createRandomEnemy() {
-    const names = ['Mr. Loser', 'Cledos', 'Ichiban', 'Gerg', 'Bossman', 'Street Thug', 'Bing Chilling'];
+function createRandomEnemy(battlesWon = 0) {
+    // random names list and list of enemy images file names as strings
+    const names = ['High Roller', 'Big Bettor', 'Mr. Loser', 'Cledos', 'Ichiban', 'Gerg', 'Bossman', 'Street Thug', 'Bing Chilling', 'Big Gangster', 'Gang Leader', 'Squad Boss', 'Michael', 'Trevor', 'Franklin'];
+    const images = ["media/img/enemy/bad_character2.jpg", "media/img/enemy/dark_enemy.jpg", "media/img/enemy/gun_enemy1.jpg", "media/img/enemy/gun_enemy2.jpg", "media/img/enemy/gun_enemy3.jpg", "media/img/enemy/gun_enemy4.jpg", "media/img/enemy/mafiaboss_character2.jpg", "media/img/enemy/mafiaboss_character3.jpg", "media/img/enemy/mafia_woman_enemy1.jpg", "media/img/enemy/mafia_woman_enemy2.jpg", "media/img/enemy/mafia_woman_enemy3.jpg", "media/img/enemy/mafia_woman_enemy4.jpg", "media/img/enemy/money_enemy1.jpg", "media/img/enemy/money_enemy2.jpg", "media/img/enemy/money_enemy3.jpg", "media/img/enemy/money_enemy4.jpg", "media/img/enemy/poker-chips_enemy1.jpg", "media/img/enemy/poker-chips_enemy2.jpg", "media/img/enemy/poker-chips_enemy3.jpg", "media/img/enemy/poker-chips_enemy4.jpg", "media/img/enemy/sales_woman_enemy1.jpg", "media/img/enemy/sales_woman_enemy2.jpg", "media/img/enemy/sales_woman_enemy3.jpg", "media/img/enemy/sales_woman_enemy4.jpg"];
+
+    // choose random and image from list
     let name = names[Math.floor(Math.random() * names.length)];
-    let health = Math.floor(Math.random() * ((300 - 80) / 10 + 1)) * 10 + 80;
-    let damage = Math.floor(Math.random() * ((60 - 20) / 10 + 1)) * 10 + 20;
-    const images = ['media/img/mafiaboss_character2.jpg', 'media/img/mafiaboss_character3.jpg', 'media/img/bad_character2.jpg'];
     let img = images[Math.floor(Math.random() * images.length)];
 
-    let npc = {
+    // Difficulty scaling factor
+    let scale = 1 + battlesWon * 0.25; // Increases stats by 25% per win
+    console.log(scale)
+    // get random base stats
+    let baseHealth = Math.floor(Math.random() * ((300 - 80) / 10 + 1)) * 10 + 80; //80-300, nearest 10.
+    let baseDamage = Math.floor(Math.random() * ((60 - 20) / 10 + 1)) * 10 + 20; //20-60, nearest 10.
+    let baseShield = Math.floor(Math.random() * 20) + 1; // 1-20
+    
+    // Scale stats with battlesWon (propgressivly harder)
+    let health = Math.floor(baseHealth * scale);
+    let damage = Math.floor(baseDamage * scale);
+    let shield = Math.floor(baseShield * scale);
+    console.log({
         'name' : name,
         'health' : health,
         'damage' : damage,
+        'shield' : shield,
         'img' : img
-    }
-
-    // npc data (choose random npc)
-    //const npcName = 'npc' + (Math.floor(Math.random() * 3) + 1); //random integer between 1-3
-    //const npc = npcs[npcName];
-    return npc;
+    })
+    return {
+        'name' : name,
+        'health' : health,
+        'damage' : damage,
+        'shield' : shield,
+        'img' : img
+    };
 }
 
 // function for creating new enemy
-function newEnemy() {
+function newEnemy(battlesWon = 0) {
     let npcContent = document.querySelector('#npc-container')
-    console.log(npcContent)
     // get npc data
-    const npc = createRandomEnemy();
+    const npc = createRandomEnemy(battlesWon);
     npcContent.style.backgroundColor = "#7A6052"
     // create new enemy
     npcContent.innerHTML = `
@@ -34,12 +49,15 @@ function newEnemy() {
         <div class="card-stats">
             <p><b>Damage:</b> <span id="npc-damage">${npc.damage}</span></p>
             <p><b>Health:</b> <span id="npc-health">${npc.health}</span></p>
-            <p><b>Speciality:</b> <span id="npc-speciality">Hävytön Äijä</span></p>
+            <p><b>Shield:</b> <span id="npc-shield">${npc.shield}</span></p>
         </div>
     `;
     const player = JSON.parse(localStorage.getItem('Saved-Game-Data'));
-    console.log("new enemy: " + player.hasRunAway)
     initializeControls(player, npc);
+
+    // clear dialog and boost output
+    document.querySelector('#dialog-content').innerHTML = "";
+    document.querySelector('#boost-output').style.display = "none";
 }
 
 // function for when enemy dies
@@ -49,34 +67,30 @@ function enemyDead(playerData, enemyData) {
     // de-activate controls
     disableControls();
 
-    // set set visible health to 0
+    // set set visible health to 0 and card as red
     document.querySelector('#npc-health').textContent = 0;
-    //red enemy
     document.querySelector('#npc-container').style.backgroundColor = "#8b0000";
-    // dialog
+    
+    // update dialog (enemy dead)
     dialogElement.style.display = "flex";
     dialogElement.innerHTML = `<p><b class="enemy-name">${enemyData.name}</b> has died...</p>`;
-    // draw/update score for winning fight
-    console.log("draw score function runnning in enemyDead...");
-    console.log(playerData.battlesWon);
+    
+    // update player battles won stat
     playerData.battlesWon += 1;
-    console.log(playerData.battlesWon);
+
+    // draw/update score for winning fight
     drawScore(playerData);
+
     // reset has run away status
     playerData.hasRunAway = false;
-    saveGame(playerData);
+
+    // draw boosts and save game when one is picked
+    drawBoosts(playerData);
 
     // play random sound for enemy dying
     const deadSounds = ['media/audio/sfx/dead/male_death1.mp3', 'media/audio/sfx/dead/male_death2.wav', 'media/audio/sfx/dead/male_death3.wav', 'media/audio/sfx/dead/male-death4.wav'];
     const randomDeadSound = deadSounds[Math.floor(Math.random() * deadSounds.length)];
     playSoundEffect(randomDeadSound);
-
-    // button for generating new enemy
-    document.querySelector('#npc-container h2').innerHTML = `<button type="button" class="btn btn-success" id="new-enemy-btn">New Enemy</button>`
-    // eventlistener to create new enemy
-    document.querySelector('#new-enemy-btn').addEventListener('click', ()=> {
-        newEnemy();
-    })
 }
 // enemy take damage function
 function enemyDamage(enemyData, damageAmount) {

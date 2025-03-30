@@ -50,7 +50,7 @@ function initializeCharacters(characterData) {
     // player charachter data
     const player = JSON.parse(characterData);
     // get random enemy/npc stats
-    const npc = createRandomEnemy(); 
+    const npc = createRandomEnemy(characterData.battlesWon); 
 
     // add characters to DOM
     document.querySelector('#select-char-container').innerHTML = "";
@@ -62,6 +62,8 @@ function initializeCharacters(characterData) {
         <div class="card-stats">
             <p><b>Damage:</b> <span id="player-damage">${player.damage}</span></p>
             <p><b>Health:</b> <span id="player-health">${player.health}</span></p>
+            <p><b>Shield:</b> <span id="player-shield">${player.shield}</span></p>
+            <p><b>Tactical:</b> <span id="player-tactical">${player.tacticalBoost}</span></p>
             <p><b>Speciality:</b> <span id="player-speciality">${player.special}</span></p>
         </div>
     </div>
@@ -72,7 +74,7 @@ function initializeCharacters(characterData) {
         <div class="card-stats">
             <p><b>Damage:</b> <span id="npc-damage">${npc.damage}</span></p>
             <p><b>Health:</b> <span id="npc-health">${npc.health}</span></p>
-            <p><b>Speciality:</b> <span id="npc-speciality">Hävytön Äijä</span></p>
+            <p><b>Shield:</b> <span id="npc-shield">${npc.shield}</span></p>
         </div>
     </div>
     `;
