@@ -136,6 +136,10 @@
 #battles-won {
     font-family: 'Jolly Lodger';
 }
+/* boosters/stat bonus/loot - for winning a battle */
+#boosters-container {
+    
+}
 /* game over */
 #gameover-title {
     font-family: 'Rubik Dirt';
