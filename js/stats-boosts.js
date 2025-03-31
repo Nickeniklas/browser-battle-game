@@ -12,16 +12,21 @@ function drawScore(playerData) {
 
 // BOOSTS/PERKS/LOOT
 function createBoost(amount = 1) {
-    //  boost types 
-    let boostTypeList = ['Gain Health', 'Upgrade Damage', 'Gain Shield', 'Upgrade Tactical'];
-    
+    // Define boost types and their specific amount logic
+    let boostTypeList = [
+        { type: 'Gain Health', getAmount: () => Math.floor(Math.random() * 7) * 5 + 20 }, // Random between 20-50, step 5
+        { type: 'Upgrade Damage', getAmount: () => Math.floor(Math.random() * 4) * 5 + 5 }, // Random between 5-20, step 5
+        { type: 'Gain Shield', getAmount: () => Math.floor(Math.random() * 5) * 5 + 10 }, // Random between 10-30, step 5
+        { type: 'Upgrade Tactical', getAmount: () => Math.floor(Math.random() * 5) * 5 + 10 } // Random between 10-30, step 5
+    ];
+
     // Shuffle boost types to ensure randomness
     let shuffledBoosts = boostTypeList.sort(() => Math.random() - 0.5);
-    
+
     // Limit the selection to the requested amount, avoiding duplicates
-    let selectedBoosts = shuffledBoosts.slice(0, Math.min(amount, boostTypeList.length)).map(type => ({
-        type: type,
-        amount: Math.max(5, Math.floor(Math.random() * 5) * 5)
+    let selectedBoosts = shuffledBoosts.slice(0, Math.min(amount, boostTypeList.length)).map(boost => ({
+        type: boost.type,
+        amount: boost.getAmount() // Use the specific logic for each type
     }));
 
     return selectedBoosts;
@@ -34,7 +39,7 @@ function useBoost(playerData, boostType, boostAmount) {
         // hide buttons and draw upgrade instead
         boostsContainer.innerHTML = `
         <div id="boost-output">
-            <h2>Player healed for ${boostAmount}</h2>
+            <h2>${playerData.name} healed for ${boostAmount}</h2>
         </div>
         `
         console.log("BOOST: Player healed for", boostAmount);
@@ -56,7 +61,7 @@ function useBoost(playerData, boostType, boostAmount) {
         // hide buttons and draw upgrade instead
         boostsContainer.innerHTML = `
         <div id="boost-output">
-            <h2>Player damage upgraded for ${boostAmount}</h2>
+            <h2>${playerData.name} damage upgraded for ${boostAmount}</h2>
         </div>
         `
         console.log("BOOST: Player damage increased by", boostAmount);
@@ -78,7 +83,7 @@ function useBoost(playerData, boostType, boostAmount) {
         // hide buttons and draw upgrade instead
         boostsContainer.innerHTML = `
         <div id="boost-output">
-            <h2>Player damage block increased by ${boostAmount}</h2>
+            <h2>${playerData.name} damage block increased by ${boostAmount}</h2>
         </div>
         `
         console.log("BOOST: Player damage block increased by", boostAmount);
@@ -100,7 +105,7 @@ function useBoost(playerData, boostType, boostAmount) {
         // hide buttons and draw upgrade instead
         boostsContainer.innerHTML = `
         <div id="boost-output">
-            <h2>Player tactical upgraded by ${boostAmount}</h2>
+            <h2>${playerData.name} tactical upgraded by ${boostAmount}</h2>
         </div>
         `;
         console.log("BOOST: Player tactical upgraded by", boostAmount);

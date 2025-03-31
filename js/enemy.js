@@ -20,13 +20,7 @@ function createRandomEnemy(battlesWon = 0) {
     let health = Math.floor(baseHealth * scale);
     let damage = Math.floor(baseDamage * scale);
     let shield = Math.floor(baseShield * scale);
-    console.log({
-        'name' : name,
-        'health' : health,
-        'damage' : damage,
-        'shield' : shield,
-        'img' : img
-    })
+    
     return {
         'name' : name,
         'health' : health,

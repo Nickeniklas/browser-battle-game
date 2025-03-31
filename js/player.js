@@ -49,10 +49,13 @@ function playerDamage(playerData, enemyData) {
     console.log("player damage")
     //console.log("original health:", playerData.health)
     // determine damage amount
-    const randomness = parseFloat((0.4 + Math.random() * 0.6).toFixed(2));
+    const randomness = (0.6 + Math.random() * 0.4);
     console.log("Blow hit precentage: " + randomness * 100 + "%");
-    let damage = parseFloat(enemyData.damage * randomness);
-    damage = Math.round(damage * 100) / 100;
+    let damage = enemyData.damage * randomness; // apply randomness
+    damage = parseFloat(damage / (enemyData.shield / 100 + 1).toFixed(2)); // scale down damage with enemy shield 
+    damage = Math.round(damage * 100) / 100; // round 
+    console.log("enemy damage scaled down by:", (playerData.shield / 100 + 1), "and randomness:", randomness);
+    
 
     // remove player health
     playerData.health -= damage
@@ -88,10 +91,12 @@ function skillPrimary(playerData, enemyData) {
     // determine damage
     //console.log("enemy hp before: " + enemyData.health);
     // randomness
-    const randomness = parseFloat((0.6 + Math.random() * 0.4).toFixed(2));
+    const randomness = (0.7 + Math.random() * 0.3);
     //console.log("Blow hit precentage: " + randomness * 100 + "%");
-    let damage = parseFloat(playerData.damage * randomness);
+    let damage = playerData.damage * randomness;
+    damage = parseFloat(damage / (enemyData.shield / 100 + 1)); // scale down damage with enemy shield 
     damage = Math.round(damage * 100) / 100;
+    console.log("player damage scaled down by:", (enemyData.shield / 100 + 1));
     // deal damage to enemy
     enemyData.health -= damage ;
     //visualize damage in dom
@@ -136,6 +141,7 @@ function skillSecondary(playerData, enemyData) {
         timeOutDuration = 800 // longer time to read 
         // heal player for random amount
         let healAmount = Math.floor(Math.random() * 46) + 25; // 25 - 80
+        healAmount = parseFloat(healAmount * (playerData.tacticalBoost / 100 + 1).toFixed(2)); // scale with boost
         healAmount = Math.round(healAmount * 100) / 100;
         playerData.health += healAmount;
         // dialog message healing player 
@@ -154,7 +160,9 @@ function skillSecondary(playerData, enemyData) {
 
         // deal damage to enemy for random amount
         let damageAmount = Math.floor(Math.random() * 46) + 25;
+        damageAmount = parseFloat(damageAmount * (playerData.tacticalBoost / 100 + 1).toFixed(2)); // scale with boost, 10 tacticalBoost += 0.1 scale
         damageAmount = Math.round(damageAmount * 100) / 100;
+        console.log("scale factor: " + (playerData.tacticalBoost / 100 + 1));
         enemyData.health -= damageAmount;
         // dialog message enemy smelling bad stuff 
         dialogElement.innerHTML += `<p><b class="enemy-name">${enemyData.name}</b> also smelled that ${randomItem} and took ${damageAmount} damage!</p>`;
