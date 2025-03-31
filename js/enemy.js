@@ -75,8 +75,11 @@ function enemyDead(playerData, enemyData) {
     // draw/update score for winning fight
     drawScore(playerData);
 
-    // reset has run away status
+    // reset has run away status, and perk flags
     playerData.hasRunAway = false;
+    playerData.lifesteal = false;
+    playerData.doubledamage = false;
+    playerData.invincibility = false;
 
     // draw boosts and save game when one is picked
     drawBoosts(playerData);
@@ -99,7 +102,7 @@ function enemyDamage(enemyData, damageAmount) {
 }
 
 // enemy does something function
-function enemyMove(playerData, enemyData, hpChangeAmount, damage=false) {  
+function enemyMove(playerData, enemyData, hpChangeAmount=0, damage=false) {  
     // ENEMY IS DEAD
     if (enemyData.health <= 0) {
         document.querySelector('#npc-health').textContent = 0;
@@ -107,11 +110,26 @@ function enemyMove(playerData, enemyData, hpChangeAmount, damage=false) {
         return;
     }
 
+    // player has invincibility, doesnt take damage
+    else if (playerData.invincibility == true) {
+        console.log("enemy attack blocked by invincibility")
+        // update dialog with no damage msg
+        dialogElement.innerHTML = `<p><b class="enemy-name">${enemyData.name}</b>'s attack wasn't very effective...</p>`;
+        window.scrollTo(0, document.body.scrollHeight); // scroll to dialog
+
+        // play sfx 
+        playSoundEffect('media/audio/sfx/offense/attack-blocked1.wav');//shield blocking sound
+
+        enableControls();
+
+        return;
+    }
     // ENEMY RESPONSE TO PLAYER USED DAMAGING HIT
-    if (damage && enemyData.health > 0) {
+    else if (damage && enemyData.health > 0) {
         // enemy takes damage
         enemyDamage(enemyData, hpChangeAmount);
-        window.scrollTo(0, document.body.scrollHeight);
+        window.scrollTo(0, document.body.scrollHeight); // scroll down to see damage taken dialog
+
         // 0.8 sec delayed enemy attack response
         setTimeout(()=> {
             // dialog for attacking player
@@ -124,7 +142,7 @@ function enemyMove(playerData, enemyData, hpChangeAmount, damage=false) {
             playSoundEffect(enemyAttackAudioFile);
             
             enableControls();
-            
+
             // deal damage to player
             playerDamage(playerData, enemyData, hpChangeAmount);
             

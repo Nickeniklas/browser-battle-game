@@ -88,15 +88,34 @@ function skillPrimary(playerData, enemyData) {
     getControlElements();
     dialogElement.innerHTML = "";
     
-    // determine damage
-    //console.log("enemy hp before: " + enemyData.health);
     // randomness
     const randomness = (0.7 + Math.random() * 0.3);
     //console.log("Blow hit precentage: " + randomness * 100 + "%");
+    
+    // damage amount
     let damage = playerData.damage * randomness;
     damage = parseFloat(damage / (enemyData.shield / 100 + 1)); // scale down damage with enemy shield 
     damage = Math.round(damage * 100) / 100;
-    console.log("player damage scaled down by:", (enemyData.shield / 100 + 1));
+    
+    //console.log("player damage scaled down by:", (enemyData.shield / 100 + 1));
+    
+    // double the damage if double damage flag is true
+    if (playerData.doubledamage == true) {
+        damage *= 2;
+        console.log("player dd amount", damage);
+    }  
+
+    // heal player for half damage if life steal flag is true
+    else if (playerData.lifesteal == true) {
+        // add half of the damage as health to player
+        playerData.health += damage / 2;
+
+        // update health visually/in dom 
+        let hpElement = document.querySelector('#player-health');
+        hpElement.textContent = Math.max(0, playerData.health.toFixed(2)); // min 0, rounded 0 decimals
+        hpElement.style.color = "#07c06a"; // green for gaining health
+    } 
+
     // deal damage to enemy
     enemyData.health -= damage ;
     //visualize damage in dom
@@ -136,6 +155,7 @@ function skillSecondary(playerData, enemyData) {
     const lethalItems = ['Niksapussi', 'Mallugoldi', 'Denssirotta', 'vanhat vedet', 'Metukka', 'Karhu kolmonen', 'warm chair', 'exhaust fumes'];
     // items that do nothing
     const nonItems = ['Peach', 'Pear', 'Plum', 'Kiwi', 'Pomegranate', 'Coconut', 'Fig', 'Papaya', 'Guava', 'Lychee'];
+    
     // determine if item heals player
     if (healItems.includes(randomItem)) {
         timeOutDuration = 800 // longer time to read 
@@ -149,7 +169,7 @@ function skillSecondary(playerData, enemyData) {
         // display healing
         let hpElement = document.querySelector('#player-health');
         hpElement.textContent = Math.max(0, playerData.health.toFixed(2));
-        hpElement.style.color = "#198754";
+        hpElement.style.color = "#07c06a";
 
         amount = healAmount;
     }
@@ -174,7 +194,17 @@ function skillSecondary(playerData, enemyData) {
 
         amount = damageAmount;
     }
-    // item is uselss (does nothing)
+    // non item and player has tactical level 50 - nonItems give special perks
+    else if (nonItems.includes(randomItem) && playerData.tacticalBoost >= 30) {
+        // disable controls until perk is drawn and chosen
+        disableControls();
+        drawPerks(playerData, enemyData);
+        
+        // dialog message enemy smelling bad stuff 
+        dialogElement.innerHTML += `<p>The fruit gave ${playerData.name} perks!</p>`;
+        return;
+    }
+    // item is uselss (does nothing unless tacticalBoost > 30)
     else if (nonItems.includes(randomItem)) {
         timeOutDuration = 500;
 
