@@ -13,7 +13,7 @@ function drawScore(playerData) {
 // SPECIAL PERK (from tactical when upgraded enough)
 function createPerk(amount = 1) {
     // list of possible perks
-    let perkTypeList = ['Life Steal', 'Double Damage', 'Invincibility'];
+    let perkTypeList = ['Life Steal', 'Double Damage'/*, 'Invincibility'*/];
 
     // Shuffle the array
     let shuffledPerks = perkTypeList.sort(() => Math.random() - 0.5);

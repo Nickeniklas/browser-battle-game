@@ -13,7 +13,7 @@ function createRandomEnemy(battlesWon = 0) {
     console.log(scale)
     // get random base stats
     let baseHealth = Math.floor(Math.random() * ((140 - 60) / 10 + 1)) * 10 + 60; //60-140, nearest 10.
-    let baseDamage = Math.floor(Math.random() * 5) * 5 + 15; //15-35, nearest 5.
+    let baseDamage = Math.floor(Math.random() * 5) * 5 + 20; //20-40, nearest 5.
     let baseShield = Math.floor(Math.random() * 20) + 1; // 1-20
     
     // Scale stats with battlesWon (propgressivly harder)
