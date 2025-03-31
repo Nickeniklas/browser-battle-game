@@ -52,7 +52,7 @@ function playerDamage(playerData, enemyData) {
     const randomness = (0.6 + Math.random() * 0.4);
     console.log("Blow hit precentage: " + randomness * 100 + "%");
     let damage = enemyData.damage * randomness; // apply randomness
-    damage = parseFloat(damage / (enemyData.shield / 100 + 1).toFixed(2)); // scale down damage with enemy shield 
+    damage = parseFloat(damage / (playerData.shield / 100 + 1).toFixed(2)); // scale down damage with players shield 
     damage = Math.round(damage * 100) / 100; // round 
     console.log("enemy damage scaled down by:", (playerData.shield / 100 + 1), "and randomness:", randomness);
     
@@ -155,7 +155,7 @@ function skillSecondary(playerData, enemyData) {
     const lethalItems = ['Niksapussi', 'Mallugoldi', 'Denssirotta', 'vanhat vedet', 'Metukka', 'Karhu kolmonen', 'warm chair', 'exhaust fumes'];
     // items that do nothing
     const nonItems = ['Peach', 'Pear', 'Plum', 'Kiwi', 'Pomegranate', 'Coconut', 'Fig', 'Papaya', 'Guava', 'Lychee'];
-    
+
     // determine if item heals player
     if (healItems.includes(randomItem)) {
         timeOutDuration = 800 // longer time to read 
