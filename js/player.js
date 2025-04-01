@@ -140,8 +140,9 @@ function skillSecondary(playerData, enemyData) {
     let timeOutDuration = 1500;
     let amount = 0;
     // array of possible items
-    const items = ['Apple', 'Banana', 'Cherry', 'Grapes', 'Mango', 'Pineapple', 'Strawberry', 'Watermelon', 'Blueberry', 'Orange', 'Niksapussi', 'Mallugoldi', 'Denssirotta', 'vanhat vedet', 'Metukka', 'Karhu kolmonen', 'warm chair', 'exhaust fumes', 'Peach', 'Pear', 'Plum', 'Kiwi', 'Coconut', 'Fig', 'Papaya', 'Guava'];
-    let randomItem = items[Math.floor(Math.random() * items.length)]; //random item
+    const items = ['Apple', 'Banana', 'Watermelon', 'Blueberry', 'Paint', 'cigarette', 'warm chair', 'exhaust fumes', 'Kebab with fries', 'Pepperoni Pizza'];
+    let shuffledItems = items.sort(() => Math.random() - 0.5);
+    let randomItem = shuffledItems[Math.floor(Math.random() * shuffledItems.length)]; //random item
 
     disableControls();
 
@@ -150,17 +151,17 @@ function skillSecondary(playerData, enemyData) {
     dialogElement.innerHTML = `<p><b class="player-name">${playerData.name}</b> smelled and tasted a ${randomItem}....</p>`;
     
     // healing items
-    const healItems = ['Apple', 'Banana', 'Cherry', 'Grapes', 'Mango', 'Pineapple', 'Strawberry', 'Watermelon', 'Blueberry', 'Orange'];
+    const healItems = ['Apple', 'Banana', 'Watermelon', 'Blueberry'];
     // items that damage the enemy
-    const lethalItems = ['Niksapussi', 'Mallugoldi', 'Denssirotta', 'vanhat vedet', 'Metukka', 'Karhu kolmonen', 'warm chair', 'exhaust fumes'];
+    const lethalItems = ['Paint', 'cigarette', 'warm chair', 'exhaust fumes'];
     // items that do nothing
-    const nonItems = ['Peach', 'Pear', 'Plum', 'Kiwi', 'Pomegranate', 'Coconut', 'Fig', 'Papaya', 'Guava', 'Lychee'];
+    const perkItems = ['Kebab with fries', 'Pepperoni Pizza'];
 
     // determine if item heals player
     if (healItems.includes(randomItem)) {
         timeOutDuration = 800 // longer time to read 
         // heal player for random amount
-        let healAmount = Math.floor(Math.random() * 46) + 25; // 25 - 80
+        let healAmount = Math.floor(Math.random() * 11) + 40; // 40 - 50
         healAmount = parseFloat(healAmount * (playerData.tacticalBoost / 100 + 1).toFixed(2)); // scale with boost
         healAmount = Math.round(healAmount * 100) / 100;
         playerData.health += healAmount;
@@ -194,23 +195,35 @@ function skillSecondary(playerData, enemyData) {
 
         amount = damageAmount;
     }
-    // non item and player has tactical level 50 - nonItems give special perks
-    else if (nonItems.includes(randomItem) && playerData.tacticalBoost >= 30) {
+    // non item and player has tactical level 50 - perkItems give special perks (once(if no perk flag is true))
+    else if (perkItems.includes(randomItem) && playerData.tacticalBoost >= 30 && !playerData.doubledamage && !playerData.lifesteal) {
         // disable controls until perk is drawn and chosen
         disableControls();
         drawPerks(playerData, enemyData);
+
+        // dialog message player getting perk from fuit 
+        dialogElement.innerHTML += `<p>The ${randomItem} gave ${playerData.name} perks!</p>`;
         
-        // dialog message enemy smelling bad stuff 
-        dialogElement.innerHTML += `<p>The fruit gave ${playerData.name} perks!</p>`;
+        
         return;
     }
     // item is uselss (does nothing unless tacticalBoost > 30)
-    else if (nonItems.includes(randomItem)) {
-        timeOutDuration = 500;
+    else if (perkItems.includes(randomItem)) {
+        timeOutDuration = 800;
 
-        // update dialog 
-        // dialog message enemy smelling bad stuff 
-        dialogElement.innerHTML += `<p>Nothing happened...</p>`;
+        // heal player for random amount
+        let healAmount = Math.floor(Math.random() * 11) + 30; // 30 - 40
+        healAmount = parseFloat(healAmount * (playerData.tacticalBoost / 100 + 1).toFixed(2)); // scale with boost
+        healAmount = Math.round(healAmount * 100) / 100;
+        playerData.health += healAmount;
+        // dialog message healing player 
+        dialogElement.innerHTML += `<p><b class="player-name">${playerData.name}</b> got healed for ${healAmount}!</p>`;
+        // display healing
+        let hpElement = document.querySelector('#player-health');
+        hpElement.textContent = Math.max(0, playerData.health.toFixed(2));
+        hpElement.style.color = "#07c06a";
+
+        amount = healAmount;
     }
 
     // scroll down to messages
